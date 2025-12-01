@@ -51,5 +51,8 @@ int main(void) {
 
   printf("Result: %d\n", result);
   printf("Result2: %d\n", result2.clicks);
+
+  // yeah there is memory that "could" be cleaned up, but why should i do it
+  // when the os already does that for me? :)
   return 0;
 }
