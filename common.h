@@ -79,6 +79,10 @@ internal bool str_ends_with(string s, string suffix) {
   return s.len >= suffix.len && memcmp(s.data + s.len - suffix.len, suffix.data, suffix.len) == 0;
 }
 
+internal bool str_valid(string s) {
+  return s.data != NULL && s.len > 0;
+}
+
 typedef struct {
   const void *data;
   usize len;
