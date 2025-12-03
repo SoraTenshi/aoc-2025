@@ -7,15 +7,17 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef uint8_t  u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
+typedef uint8_t           u8;
+typedef uint16_t          u16;
+typedef uint32_t          u32;
+typedef uint64_t          u64;
+typedef unsigned __int128 u128;
 
-typedef int8_t  s8;
-typedef int16_t s16;
-typedef int32_t s32;
-typedef int64_t s64;
+typedef int8_t   s8;
+typedef int16_t  s16;
+typedef int32_t  s32;
+typedef int64_t  s64;
+typedef __int128 s128;
 
 typedef size_t    usize;
 typedef ptrdiff_t ssize;
@@ -85,7 +87,7 @@ typedef struct {
 #define slice_get(s, T, i) (((const T*)(s).data)[i])
 #define slice_len(s, T) ((s).len / sizeof(T))
 
-internal u8 slice_new(ref const slice *s, usize start, usize end, own slice *out) {
+internal bool slice_new(ref const slice *s, usize start, usize end, own slice *out) {
   if(start > s->len || end > s->len || start >= end) {
     return false;
   }
@@ -162,14 +164,14 @@ internal s64 slice_to_s64(slice s) {
 
     if (i < s.len && data[i] == '-') {
         negative = true;
-        i++;
+        ++i;
     } else if (i < s.len && data[i] == '+') {
-        i++;
+        ++i;
     }
 
     while (i < s.len && data[i] >= '0' && data[i] <= '9') {
         result = result * 10 + (data[i] - '0');
-        i++;
+        ++i;
     }
 
     return negative ? -result : result;
@@ -183,7 +185,7 @@ internal u64 slice_to_u64(slice s) {
 
     while (i < s.len && data[i] >= '0' && data[i] <= '9') {
         result = result * 10 + (data[i] - '0');
-        i++;
+        ++i;
     }
 
     return result;
@@ -191,5 +193,25 @@ internal u64 slice_to_u64(slice s) {
 
 #define slice_to_int(s, T)   (T)slice_to_s64(s)
 #define slice_to_uint(s, T)  (T)slice_to_u64(s)
+
+internal void println_u128(const char *label, u128 n) {
+  printf("%s", label);
+
+  if(n == 0) {
+    printf("0");
+    return;
+  }
+
+  char buf[40] = {0};
+  int pos = 39;
+  buf[pos] = '\0';
+
+  while(n > 0) {
+    buf[--pos] = '0' + (n % 10);
+    n /= 10;
+  }
+
+  printf("%s\n", &buf[pos]);
+}
 
 #endif /* COMMON_H_ */
